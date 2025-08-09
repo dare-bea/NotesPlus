@@ -184,6 +184,25 @@ namespace NotesPlus
 			}
 		}
 
+		public ModSettings.DropdownSetting AdditionalNotesMarking
+		{
+			get
+			{
+				return new ModSettings.DropdownSetting
+				{
+					Name = "Additional Notes Marking (WIP)",
+					Description = "The way you input additional notes (this does not change how the additional notes look next to one's name)",
+					Options = this.AdditionalNotesMarkingList,
+					AvailableInGame = /*true*/ false,
+					Available = /*ModSettings.GetBool("Additional Notes")*/ false,
+					OnChanged = delegate (string s)
+                    {
+						Settings.SettingsCache.SetValue("Additional Notes Marking", s);
+                    }
+				};
+			}
+		}
+
 		// Token: 0x04000001 RID: 1
 		private readonly List<string> FactionSettings = new List<string>(5)
 		{
@@ -202,6 +221,14 @@ namespace NotesPlus
 			"{Note}",
 			"- Note",
 			"Note"
+		};
+
+		private readonly List<string> AdditionalNotesMarkingList = new List<string>(5)
+		{
+			"(Note)",
+			"[Note]",
+			"{Note}",
+			"--Note",
 		};
 
 		private readonly List<string> CopyToClipboardModes = new List<string>(2)
@@ -235,6 +262,10 @@ namespace NotesPlus
             {
 				"Additional Notes Style",
 				"(Note)"
+            },
+            {
+				"Additional Notes Marking",
+				"[Note]"
             },
             {
 				"Copy to Clipboard Mode",

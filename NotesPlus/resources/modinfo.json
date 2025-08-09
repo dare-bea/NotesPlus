@@ -2,7 +2,8 @@
   "HarmonyId": "synapsium.notes.plus",
   "DisplayName": "Player Notes+",
   "Authors": [
-    "Synapsium"
+    "Synapsium",
+    "dareb"
   ],
   "Description": "Player Notes will now show claims you put into it next to their name",
   "Version": "1.0.2",
