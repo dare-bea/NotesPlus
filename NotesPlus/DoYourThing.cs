@@ -1116,9 +1116,9 @@ namespace NotesPlus
 					}
 					notesLabel.GetComponent<TextMeshProUGUI>().text = additionalNoteText;
 				}
-				if (notesLabel.activeSelf != (bool)matches.Count)
+				if (notesLabel.activeSelf != (matches.Count > 0))
 				{
-					notesLabel.SetActive((bool)matches.Count);
+					notesLabel.SetActive(matches.Count > 0);
 				}
 			}
 		}
