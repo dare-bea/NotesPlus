@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using BMG.UI;
 using Game.Interface;
@@ -1106,19 +1108,38 @@ namespace NotesPlus
 		{
 			if ((bool)Settings.SettingsCache.GetValue("Additional Notes"))
 			{
-				MatchCollection matches = DoYourThing.AdditionalNotesRegex.Matches(str);
 				GameObject notesLabel = DoYourThing.GetNotesLabel(key);
-				if (matches.Count > 0)
+				if ((bool)Settings.SettingsCache.GetValue("Multiple Additional Notes"))
 				{
-					string additionalNoteText = "";
-					foreach (Match match in matches) {
-						additionalNoteText += DoYourThing.GetAdditionalNoteText(match.Value, ColorUtility.ToHtmlStringRGB((Color)Settings.SettingsCache.GetValue("Additional Notes Color")));
+					MatchCollection matches = DoYourThing.AdditionalNotesRegex.Matches(str);
+					if (matches.Count > 0)
+					{
+						string additionalNoteText = string.Join(" ",
+							matches.Cast<Match>().Select(match =>
+								DoYourThing.GetAdditionalNoteText(
+									match.Value,
+									ColorUtility.ToHtmlStringRGB((Color)Settings.SettingsCache.GetValue("Additional Notes Color"))
+								)
+							)
+						);
+						notesLabel.GetComponent<TextMeshProUGUI>().text = additionalNoteText;
 					}
-					notesLabel.GetComponent<TextMeshProUGUI>().text = additionalNoteText;
+					if (notesLabel.activeSelf != (matches.Count > 0))
+					{
+						notesLabel.SetActive(matches.Count > 0);
+					}
 				}
-				if (notesLabel.activeSelf != (matches.Count > 0))
+				else
 				{
-					notesLabel.SetActive(matches.Count > 0);
+					Match match = DoYourThing.AdditionalNotesRegex.Match(str);
+					if (match.Success)
+					{
+						notesLabel.GetComponent<TextMeshProUGUI>().text = DoYourThing.GetAdditionalNoteText(match.Value, ColorUtility.ToHtmlStringRGB((Color)Settings.SettingsCache.GetValue("Additional Notes Color")));
+					}
+					if (notesLabel.activeSelf != match.Success)
+					{
+						notesLabel.SetActive(match.Success);
+					}
 				}
 			}
 		}
