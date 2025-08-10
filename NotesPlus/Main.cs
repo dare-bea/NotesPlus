@@ -45,6 +45,7 @@ namespace NotesPlus
 				Settings.SettingsCache.SetValue("Show Faction Color", ModSettings.GetString("Show Faction Color", "synapsium.notes.plus"));
 				Settings.SettingsCache.SetValue("Additional Notes", ModSettings.GetBool("Additional Notes", "synapsium.notes.plus"));
 				Settings.SettingsCache.SetValue("Additional Notes Style", ModSettings.GetString("Additional Notes Style", "synapsium.notes.plus"));
+				Settings.SettingsCache.SetValue("Multiple Additional Notes", ModSettings.GetBool("Multiple Additional Notes", "synapsium.notes.plus"));
 				Settings.SettingsCache.SetValue("Copy to Clipboard Mode", ModSettings.GetString("Copy to Clipboard Mode", "synapsium.notes.plus"));
 				Settings.SettingsCache.SetValue("Additional Notes Color", ModSettings.GetColor("Additional Notes Color", "synapsium.notes.plus"));
 			} catch

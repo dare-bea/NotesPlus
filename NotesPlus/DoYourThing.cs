@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using BMG.UI;
 using Game.Interface;
@@ -335,7 +337,7 @@ namespace NotesPlus
 			DoYourThing.RoleIdRegex = new Regex("\\d+");
 			DoYourThing.FactionIdRegex = new Regex("(?<=,)\\d+");
 			DoYourThing.AlignmentRegex = new Regex("(?<=^|\\s|\\*)(ti|tp|tk|ts|tpow|tpower|ck|cp|cpow|cpower|cd|cu|ne|nk|na|ra|apoc|apocalypse|horseman|horsemen|rt|ct|town|townie|rc|cc|cov|coven|rn|neut|neutral)(?=$|\\s|\\*)", RegexOptions.IgnoreCase);
-			DoYourThing.AlignmentRegexBTOS = new Regex("(?<=^|\\s|\\*)(ti|tp|tk|ts|tg|tgov|te|texe|ck|cp|cpow|cpower|cd|cu|ne|nk|na|ra|apoc|apocalypse|horseman|horsemen|rt|ct|town|townie|rc|cov|cc|coven|rn|neut|neutral|np|ns|no|nout|nspec|pariah)(?=$|\\s|\\*)", RegexOptions.IgnoreCase);
+			DoYourThing.AlignmentRegexBTOS = new Regex("(?<=^|\\s|\\*)(ti|tp|tk|ts|tg|tgov|te|texe|tpow|tpower|ck|cp|cpow|cpower|cd|cu|ne|nk|na|ra|apoc|apocalypse|horseman|horsemen|rt|ct|town|townie|rc|cov|cc|coven|rn|neut|neutral|np|ns|no|nout|nspec|pariah)(?=$|\\s|\\*)", RegexOptions.IgnoreCase);
 			DoYourThing.PostChatRegex = new Regex("<style=Mention>(.*?<color=#......>.*?\\/style>)|<style=Mention>(.*?\\/style>)");
 		}
 
@@ -444,6 +446,10 @@ namespace NotesPlus
 					return new Tuple<Role, FactionType>((Role)120, FactionType.TOWN);
 				}
                 if (a == "te" || a == "texe")
+                {
+                    return new Tuple<Role, FactionType>((Role)119, FactionType.TOWN);
+                }
+                if (a == "tpow" || a == "tpower")
                 {
                     return new Tuple<Role, FactionType>((Role)119, FactionType.TOWN);
                 }
@@ -1102,15 +1108,38 @@ namespace NotesPlus
 		{
 			if ((bool)Settings.SettingsCache.GetValue("Additional Notes"))
 			{
-				Match match = DoYourThing.AdditionalNotesRegex.Match(str);
 				GameObject notesLabel = DoYourThing.GetNotesLabel(key);
-				if (match.Success)
+				if ((bool)Settings.SettingsCache.GetValue("Multiple Additional Notes"))
 				{
-					notesLabel.GetComponent<TextMeshProUGUI>().text = DoYourThing.GetAdditionalNoteText(match.Value, ColorUtility.ToHtmlStringRGB((Color)Settings.SettingsCache.GetValue("Additional Notes Color")));
+					MatchCollection matches = DoYourThing.AdditionalNotesRegex.Matches(str);
+					if (matches.Count > 0)
+					{
+						string additionalNoteText = string.Join(" ",
+							matches.Cast<Match>().Select(match =>
+								DoYourThing.GetAdditionalNoteText(
+									match.Value,
+									ColorUtility.ToHtmlStringRGB((Color)Settings.SettingsCache.GetValue("Additional Notes Color"))
+								)
+							)
+						);
+						notesLabel.GetComponent<TextMeshProUGUI>().text = additionalNoteText;
+					}
+					if (notesLabel.activeSelf != (matches.Count > 0))
+					{
+						notesLabel.SetActive(matches.Count > 0);
+					}
 				}
-				if (notesLabel.activeSelf != match.Success)
+				else
 				{
-					notesLabel.SetActive(match.Success);
+					Match match = DoYourThing.AdditionalNotesRegex.Match(str);
+					if (match.Success)
+					{
+						notesLabel.GetComponent<TextMeshProUGUI>().text = DoYourThing.GetAdditionalNoteText(match.Value, ColorUtility.ToHtmlStringRGB((Color)Settings.SettingsCache.GetValue("Additional Notes Color")));
+					}
+					if (notesLabel.activeSelf != match.Success)
+					{
+						notesLabel.SetActive(match.Success);
+					}
 				}
 			}
 		}

@@ -164,6 +164,24 @@ namespace NotesPlus
 				};
 			}
 		}
+		public ModSettings.CheckboxSetting MultipleAdditionalNotes
+		{
+			get
+			{
+				return new ModSettings.CheckboxSetting
+				{
+					Name = "Multiple Additional Notes",
+					Description = "Have multiple additional notes show up next to a player's name - not just the first one.",
+					DefaultValue = true,
+					AvailableInGame = false,
+					Available = true,
+					OnChanged = delegate (bool s)
+					{
+						Settings.SettingsCache.SetValue("Multiple Additional Notes", s);
+					}
+				};
+			}
+		}
 
 		public ModSettings.DropdownSetting CopyToClipboardMode
 		{
@@ -236,6 +254,10 @@ namespace NotesPlus
 				"Additional Notes Style",
 				"(Note)"
             },
+			{
+				"Multiple Additional Notes",
+				true
+			},
             {
 				"Copy to Clipboard Mode",
 				"Newlines"
